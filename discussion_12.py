@@ -16,7 +16,7 @@ def setUpDatabase(db_name):
 # TASK 1
 # CREATE TABLE FOR EMPLOYEE INFORMATION IN DATABASE AND ADD INFORMATION
 def create_employee_table(cur, conn):
-    cur.execute("CREATE TABLE ID NOT EXIST Employees (employee_id INT, first_name TEXT, last_name TEXT,  hire_date TEXT, job_id INT, salary INT)")
+    cur.execute("CREATE TABLE ID NOT EXIST Employees (employee_id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT,  hire_date TEXT, job_id INT, salary INT)")
     conn.commit()
 
 
@@ -37,8 +37,8 @@ def add_employee(filename, cur, conn):
         hire_date = item['hire_date']
         job_id = int(item['job_id'])
         salary = int(item['salary'])
-        cur.execute("INSERT INTO Employees (employee_id, first_name, last_name, hire_date, job_id, salary) VALUES (?,?,?,?,?,?)", )
-        (employee_id, first_name, last_name, hire_date, job_id, salary)
+        cur.execute("INSERT OR IGNORE INTO Employees (employee_id, first_name, last_name, hire_date, job_id, salary) VALUES (?,?,?,?,?,?)", (employee_id, first_name, last_name, hire_date, job_id, salary))
+    conn.commit()
 
 
 # TASK 2: GET JOB AND HIRE_DATE INFORMATION
