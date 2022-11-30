@@ -67,6 +67,28 @@ def visualization_salary_data(cur, conn):
     conn.commit()
     print(salary_data)
 
+    salary_list = []
+    job_list = []
+    for item in salary_data:
+        salary_list.append(item[0])
+        job_list.append(item[1])
+
+    plt.figure()
+    plt.scatter(job_list, salary_list)
+
+    cur.execute('SELECT Jobs.job_title, Jobs.max_salary, Jobs.min_salary FROM Jobs')
+    job_data = cur.fetchall()
+    salary_list = []
+    job_list = []
+    for item in job_data:
+
+
+    plt.xticks(rotation = 45)
+    plt.tight_layout()
+
+    plt.show()
+
+
 class TestDiscussion12(unittest.TestCase):
     def setUp(self) -> None:
         self.cur, self.conn = setUpDatabase('HR.db')
