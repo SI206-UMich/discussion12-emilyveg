@@ -16,7 +16,7 @@ def setUpDatabase(db_name):
 # TASK 1
 # CREATE TABLE FOR EMPLOYEE INFORMATION IN DATABASE AND ADD INFORMATION
 def create_employee_table(cur, conn):
-    cur.execute("CREATE TABLE ID NOT EXIST Employees (employee_id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT,  hire_date TEXT, job_id INT, salary INT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS employees (employee_id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT,  hire_date TEXT, job_id INT, salary INT)")
     conn.commit()
 
 
@@ -37,22 +37,35 @@ def add_employee(filename, cur, conn):
         hire_date = item['hire_date']
         job_id = int(item['job_id'])
         salary = int(item['salary'])
-        cur.execute("INSERT OR IGNORE INTO Employees (employee_id, first_name, last_name, hire_date, job_id, salary) VALUES (?,?,?,?,?,?)", (employee_id, first_name, last_name, hire_date, job_id, salary))
+        cur.execute("INSERT OR IGNORE INTO employees (employee_id, first_name, last_name, hire_date, job_id, salary) VALUES (?,?,?,?,?,?)", (employee_id, first_name, last_name, hire_date, job_id, salary))
     conn.commit()
 
 
 # TASK 2: GET JOB AND HIRE_DATE INFORMATION
 def job_and_hire_date(cur, conn):
-    pass
+    cur.execute('SELECT employees.hire_date, Jobs.job_title FROM employees JOIN Jobs ON employees.job_id = Jobs.job_id')
+    job_hire_date = cur.fetchall()
+    print(job_and_hire_date)
+    conn.commit()
+
+    sorted_job_hire_date = sorted(job_and_hire_date, key = lambda x: x[0])
+    # print(sorted_job_hire_date[0])
+    return sorted_job_hire_date[0][1]
 
 # TASK 3: IDENTIFY PROBLEMATIC SALARY DATA
 # Apply JOIN clause to match individual employees
 def problematic_salary(cur, conn):
-    pass
+    cur.execute('SELECT employees.first_name, employees.last_name, FROM employees, JOIN Jobs ON employees.job_id = Jobs.job_id WHERE EMPLOYEES.salary > employees.max_salary OR employees.salary < Jobs.min_salary')
+    invalid = cur.fetchall()
+    conn.commit()
+    return invalid
 
 # TASK 4: VISUALIZATION
 def visualization_salary_data(cur, conn):
-    pass
+    cur.execute('SELECT emplyees.salary, Jobs.job_title FROM employees JOIN Jobs ON employees.job_id = Jobs.job_id')
+    salary_data = cur.fetchall()
+    conn.commit()
+    print(salary_data)
 
 class TestDiscussion12(unittest.TestCase):
     def setUp(self) -> None:
